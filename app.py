@@ -1,5 +1,5 @@
 import streamlit as st
-import numpy as np
+import nand np as np
 import plotly.graph_objects as go
 from fpdf import FPDF
 import base64
@@ -200,7 +200,7 @@ if premium:
 
     pdf_output = BytesIO()
     pdf.output(pdf_output)
-    pdf_bytes = pdf_output.get blockage()
+    pdf_bytes = pdf_output.getvalue()
 
     st.download_button("Download Detailed PDF Report", pdf_bytes, "relationship_report.pdf", "application/pdf")
 
