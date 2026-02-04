@@ -2,3 +2,4 @@ streamlit
 numpy
 plotly
 fpdf2
+matplotlib
