@@ -5,11 +5,12 @@ from fpdf import FPDF
 import base64
 from io import BytesIO
 import matplotlib.pyplot as plt
+from matplotlib.patches import FancyBboxPatch
 
 st.set_page_config(page_title="Relationship Survival Predictor", page_icon="❤️", layout="centered")
 
 st.title("Relationship Survival Predictor")
-st.markdown("Quant model based on Gottman Institute research + survival analysis<br>Free version: 7 variables. Premium: extra inputs + PDF + shareable image", unsafe_allow_html=True)
+st.markdown("Quant model based on Gottman Institute research + survival analysis<br>Free: 7 variables. Premium: extra insights + nice PDF + shareable card", unsafe_allow_html=True)
 
 # Sidebar Inputs
 st.sidebar.header("Your Relationship Data")
@@ -35,16 +36,16 @@ time_together = st.sidebar.number_input("Time together (months)", min_value=1, v
 
 # Premium code input
 st.sidebar.markdown("**Premium Access**")
-premium_code = st.sidebar.text_input("Enter Premium Code (from Gumroad email)", "")
-premium = premium_code.strip() == "PREMIUM2026"  # Change this if you used a different code
+premium_code = st.sidebar.text_input("Enter Premium Code", "")
+premium = premium_code.strip() == "PREMIUM2026"  # Change this to match your Gumroad thank-you code
 
 if premium:
-    st.sidebar.success("Premium unlocked! Extra variables + downloads available.")
+    st.sidebar.success("Premium unlocked! Extra features + downloads available.")
 else:
     if premium_code.strip():
         st.sidebar.error("Invalid code. Get yours for $4.99 on Gumroad.")
     else:
-        st.sidebar.info("Enter code to unlock premium features")
+        st.sidebar.info("Enter code to unlock premium")
 
 # Premium variables
 if premium:
@@ -59,7 +60,6 @@ else:
 
 # Model
 lambda_base = 0.035
-
 lambda_penalty = (
     0.012 * (5.0 - pos_neg_ratio) +
     0.008 * conflict_freq +
@@ -92,7 +92,7 @@ happiness = max(10, min(100,
     3.0 * financial_compat
 ))
 
-# Main Outputs
+# Outputs
 col1, col2, col3 = st.columns(3)
 col1.metric("1-Year Survival", f"{survival_prob(12)*100:.1f}%")
 col2.metric("5-Year Survival", f"{survival_prob(60)*100:.1f}%")
@@ -138,39 +138,73 @@ st.plotly_chart(fig2, use_container_width=True)
 
 # Premium Features
 if premium:
-    # PDF Report - plain text only to avoid encoding issues
+    # PDF Report - nicer formatting
     pdf = FPDF()
     pdf.add_page()
-    pdf.set_font("Arial", "B", 16)
-    pdf.cell(0, 10, "Your Personalized Relationship Report", ln=1, align="C")
+    pdf.set_font("Arial", "B", 18)
+    pdf.set_text_color(220, 53, 69)  # red-ish
+    pdf.cell(0, 15, "Your Personalized Relationship Report", ln=1, align="C")
+    pdf.ln(5)
     pdf.set_font("Arial", "", 12)
+    pdf.set_text_color(0, 0, 0)
+    pdf.cell(0, 10, f"Current Duration: {time_together} months", ln=1)
+    pdf.ln(5)
+    pdf.set_font("Arial", "B", 14)
+    pdf.cell(0, 10, "Key Predictions:", ln=1)
+    pdf.set_font("Arial", "", 12)
+    pdf.cell(0, 10, f"1-Year Survival Probability: {survival_prob(12)*100:.1f}%", ln=1)
+    pdf.cell(0, 10, f"5-Year Survival Probability: {survival_prob(60)*100:.1f}%", ln=1)
+    pdf.ln(5)
+    pdf.set_font("Arial", "B", 14)
+    pdf.cell(0, 10, "Happiness Estimate:", ln=1)
+    pdf.set_font("Arial", "", 12)
+    pdf.cell(0, 10, f"{happiness:.0f}/100 - {'Strong' if happiness >= 70 else 'Moderate' if happiness >= 50 else 'Needs attention'}", ln=1)
     pdf.ln(10)
-    pdf.cell(0, 10, f"1-Year Survival: {survival_prob(12)*100:.1f}%", ln=1)
-    pdf.cell(0, 10, f"5-Year Survival: {survival_prob(60)*100:.1f}%", ln=1)
-    pdf.cell(0, 10, f"Estimated Happiness: {happiness:.0f}/100", ln=1)
+    pdf.set_font("Arial", "B", 14)
+    pdf.cell(0, 10, "What This Means:", ln=1)
+    pdf.set_font("Arial", "", 11)
+    pdf.multi_cell(0, 6, "This model uses a simplified exponential survival approach calibrated to Gottman Institute data. "
+                         "Strong points include good compatibility, positive interactions, and repair ability. "
+                         "Areas to watch: conflicts, toxic patterns, and external stress. "
+                         "Premium inputs like intimacy and financial harmony further refine the outlook.")
     pdf.ln(10)
-    pdf.set_font("Arial", "", 10)
-    pdf.multi_cell(0, 8, "This is a simplified exponential survival model based on Gottman research. "
-                         "Higher compatibility, positive interactions, successful repairs, shared values, "
-                         "intimacy frequency, and financial compatibility improve odds. "
-                         "Frequent conflicts, Four Horsemen behaviors, external stress, and age extremes reduce them. "
-                         "Use as insight only - not a diagnosis or guarantee.")
+    pdf.set_font("Arial", "I", 10)
+    pdf.set_text_color(100, 100, 100)
+    pdf.multi_cell(0, 6, "This is for entertainment and insight only. Relationships are complex - consider professional advice if needed.")
+
     pdf_output = BytesIO()
     pdf.output(pdf_output)
     pdf_bytes = pdf_output.getvalue()
 
-    st.download_button("Download Full Report (PDF)", pdf_bytes, "relationship_report.pdf", "application/pdf")
+    st.download_button("Download Beautiful PDF Report", pdf_bytes, "relationship_report.pdf", "application/pdf")
 
-    # Shareable PNG
-    fig_summary, ax = plt.subplots(figsize=(6, 4))
-    ax.text(0.5, 0.8, f"1-Year Survival: {survival_prob(12)*100:.1f}%", ha='center', va='center', fontsize=14)
-    ax.text(0.5, 0.6, f"5-Year Survival: {survival_prob(60)*100:.1f}%", ha='center', va='center', fontsize=14)
-    ax.text(0.5, 0.4, f"Happiness Score: {happiness:.0f}/100", ha='center', va='center', fontsize=14)
+    # Shareable Summary Image - nicer card design
+    fig_summary, ax = plt.subplots(figsize=(8, 5))
+    ax.set_facecolor('#fff5f5')  # light pink background
+    fig_summary.patch.set_facecolor('#fff5f5')
+
+    # Title
+    ax.text(0.5, 0.92, "My Relationship Snapshot", ha='center', va='center', fontsize=18, fontweight='bold', color='#c1121f')
+
+    # Main stats with boxes
+    ax.add_patch(FancyBboxPatch((0.15, 0.65), 0.7, 0.2, boxstyle="round,pad=0.05", ec="none", fc="#ffebee", alpha=0.8))
+    ax.text(0.5, 0.75, f"1-Year Survival: {survival_prob(12)*100:.1f}%", ha='center', va='center', fontsize=16, color='#c1121f')
+
+    ax.add_patch(FancyBboxPatch((0.15, 0.40), 0.7, 0.2, boxstyle="round,pad=0.05", ec="none", fc="#e8f5e9", alpha=0.8))
+    ax.text(0.5, 0.5, f"5-Year Survival: {survival_prob(60)*100:.1f}%", ha='center', va='center', fontsize=16, color='#2e7d32')
+
+    ax.add_patch(FancyBboxPatch((0.15, 0.15), 0.7, 0.2, boxstyle="round,pad=0.05", ec="none", fc="#e3f2fd", alpha=0.8))
+    ax.text(0.5, 0.25, f"Happiness Score: {happiness:.0f}/100", ha='center', va='center', fontsize=16, color='#1565c0')
+
+    ax.text(0.5, 0.05, "Powered by QuantYourLife", ha='center', va='center', fontsize=10, color='#757575', style='italic')
     ax.axis('off')
+
     buf = BytesIO()
-    fig_summary.savefig(buf, format="png", bbox_inches='tight')
+    fig_summary.savefig(buf, format="png", bbox_inches='tight', dpi=150)
     buf.seek(0)
-    st.download_button("Download Shareable Summary (PNG)", buf.getvalue(), "relationship_summary.png", "image/png")
+    st.download_button("Download Shareable Summary Card (PNG)", buf.getvalue(), "relationship_summary_card.png", "image/png")
+
+    plt.close(fig_summary)
 
 # Monetization Banner
 st.markdown("---")
@@ -180,10 +214,10 @@ st.markdown("""
     <p style="margin:12px 0 8px; font-size:16px;">For $4.99 one-time you get:</p>
     <ul style="text-align:left; max-width:500px; margin:0 auto 16px;">
         <li>Extra inputs: intimacy frequency, age at start, financial compatibility</li>
-        <li>Downloadable PDF report</li>
-        <li>Shareable results image</li>
+        <li>Beautiful downloadable PDF report</li>
+        <li>Shareable summary card image</li>
     </ul>
-    <a href="https://larkinharry.gumroad.com/l/relationshippredictor" target="_blank" style="display:inline-block; padding:14px 36px; background:#0d6efd; color:white; border-radius:8px; text-decoration:none; font-weight:bold; font-size:18px;">
+    <a href="YOUR_GUMROAD_PRODUCT_LINK_HERE" target="_blank" style="display:inline-block; padding:14px 36px; background:#0d6efd; color:white; border-radius:8px; text-decoration:none; font-weight:bold; font-size:18px;">
         Pay $4.99 & Get Code
     </a>
     <p style="margin-top:20px; font-size:14px;">
@@ -191,5 +225,7 @@ st.markdown("""
     </p>
 </div>
 """, unsafe_allow_html=True)
+
+st.caption("Simplified exponential survival model based on Gottman Institute data. Educational/entertainment use only.")
 
 st.caption("Simplified exponential survival model based on Gottman Institute data. Educational/entertainment use only.")
