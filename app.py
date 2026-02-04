@@ -10,7 +10,7 @@ from matplotlib.patches import FancyBboxPatch
 st.set_page_config(page_title="Relationship Survival Predictor", page_icon="❤️", layout="centered")
 
 st.title("Relationship Survival Predictor")
-st.markdown("Quant model based on Gottman Institute research + survival analysis<br>Free: 7 variables. Premium: extra inputs + detailed PDF + shareable card", unsafe_allow_html=True)
+st.markdown("Quant model based on Gottman Institute research + survival analysis.", unsafe_allow_html=True)
 
 # Sidebar Inputs
 st.sidebar.header("Your Relationship Data")
