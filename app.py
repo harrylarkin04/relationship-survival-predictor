@@ -8,35 +8,35 @@ import matplotlib.pyplot as plt
 
 st.set_page_config(page_title="Relationship Survival Predictor", page_icon="❤️", layout="centered")
 
-st.title("❤️ Relationship Survival Predictor")
-st.markdown("**Quant model based on Gottman Institute research + survival analysis**<br>Free version: 7 variables. Premium: extra inputs + PDF + shareable image", unsafe_allow_html=True)
+st.title("Relationship Survival Predictor")
+st.markdown("Quant model based on Gottman Institute research + survival analysis<br>Free version: 7 variables. Premium: extra inputs + PDF + shareable image", unsafe_allow_html=True)
 
-# ────────────────────────────── Sidebar Inputs ──────────────────────────────
+# Sidebar Inputs
 st.sidebar.header("Your Relationship Data")
 
 st.sidebar.markdown("**Compatibility & Communication**")
-compatibility = st.sidebar.slider("Compatibility score (0–10)", 0.0, 10.0, 6.5, 0.1)
-pos_neg_ratio = st.sidebar.slider("Positive:Negative ratio", 0.5, 10.0, 3.5, 0.1, help="Ideal ≥5:1")
+compatibility = st.sidebar.slider("Compatibility score (0-10)", 0.0, 10.0, 6.5, 0.1)
+pos_neg_ratio = st.sidebar.slider("Positive:Negative ratio", 0.5, 10.0, 3.5, 0.1, help="Ideal >=5:1")
 
 st.sidebar.markdown("**Conflict & Repair**")
 conflict_freq = st.sidebar.slider("Conflicts per month", 0, 20, 4)
 four_horsemen = st.sidebar.slider(
-    "Four Horsemen severity (0=none – 10=severe)",
+    "Four Horsemen severity (0=none - 10=severe)",
     0, 10, 3,
-    help="Criticism, Contempt, Defensiveness, Stonewalling — rate how often/intensely these appear in arguments."
+    help="Criticism, Contempt, Defensiveness, Stonewalling - rate how often/intensely these appear in arguments."
 )
-repair_success = st.sidebar.slider("Repair attempt success (0–10)", 0, 10, 6, help="How well do you de-escalate / make up after fights?")
+repair_success = st.sidebar.slider("Repair attempt success (0-10)", 0, 10, 6, help="How well do you de-escalate / make up after fights?")
 
 st.sidebar.markdown("**Life & Values**")
-shared_values = st.sidebar.slider("Shared values/goals (0–10)", 0.0, 10.0, 6.0, 0.1)
-external_stress = st.sidebar.slider("External stress (finances/work/family, 0–10)", 0, 10, 4)
+shared_values = st.sidebar.slider("Shared values/goals (0-10)", 0.0, 10.0, 6.0, 0.1)
+external_stress = st.sidebar.slider("External stress (finances/work/family, 0-10)", 0, 10, 4)
 
 time_together = st.sidebar.number_input("Time together (months)", min_value=1, value=18, step=1)
 
 # Premium code input
 st.sidebar.markdown("**Premium Access**")
 premium_code = st.sidebar.text_input("Enter Premium Code (from Gumroad email)", "")
-premium = premium_code.strip() == "PREMIUM2026"  # Change this code if you want
+premium = premium_code.strip() == "PREMIUM2026"  # Change this if you used a different code
 
 if premium:
     st.sidebar.success("Premium unlocked! Extra variables + downloads available.")
@@ -46,18 +46,18 @@ else:
     else:
         st.sidebar.info("Enter code to unlock premium features")
 
-# Premium variables (only active if code correct)
+# Premium variables
 if premium:
     st.sidebar.markdown("**Premium Variables**")
     intimacy_freq = st.sidebar.slider("Physical intimacy frequency (times/month)", 0, 30, 8, 1)
     age_at_start = st.sidebar.slider("Age when relationship started (years)", 18, 50, 25, 1)
-    financial_compat = st.sidebar.slider("Financial compatibility (0–10)", 0.0, 10.0, 6.0, 0.1)
+    financial_compat = st.sidebar.slider("Financial compatibility (0-10)", 0.0, 10.0, 6.0, 0.1)
 else:
     intimacy_freq = 8
     age_at_start = 25
     financial_compat = 6.0
 
-# ────────────────────────────── Model ──────────────────────────────
+# Model
 lambda_base = 0.035
 
 lambda_penalty = (
@@ -68,9 +68,9 @@ lambda_penalty = (
     -0.005 * shared_values +
     0.007 * external_stress +
     -0.006 * repair_success +
-    -0.004 * (intimacy_freq / 10) +              # premium
-    0.002 * max(0, abs(age_at_start - 28)) +     # premium
-    -0.005 * financial_compat                    # premium
+    -0.004 * (intimacy_freq / 10) +
+    0.002 * max(0, abs(age_at_start - 28)) +
+    -0.005 * financial_compat
 )
 
 lambda_monthly = max(0.01, lambda_base + lambda_penalty)
@@ -87,12 +87,12 @@ happiness = max(10, min(100,
     3.5 * shared_values +
     -3.0 * external_stress +
     4.2 * repair_success +
-    2.8 * (intimacy_freq / 5) +                  # premium
-    -1.5 * max(0, abs(age_at_start - 28)) +      # premium
-    3.0 * financial_compat                       # premium
+    2.8 * (intimacy_freq / 5) +
+    -1.5 * max(0, abs(age_at_start - 28)) +
+    3.0 * financial_compat
 ))
 
-# ────────────────────────────── Main Outputs ──────────────────────────────
+# Main Outputs
 col1, col2, col3 = st.columns(3)
 col1.metric("1-Year Survival", f"{survival_prob(12)*100:.1f}%")
 col2.metric("5-Year Survival", f"{survival_prob(60)*100:.1f}%")
@@ -136,9 +136,9 @@ fig2 = go.Figure(go.Bar(
 fig2.update_layout(title="Predictor Impact on Longevity", yaxis_title="Relative Impact", template="plotly_white", height=450)
 st.plotly_chart(fig2, use_container_width=True)
 
-# ────────────────────────────── Premium Features ──────────────────────────────
+# Premium Features
 if premium:
-    # PDF Report
+    # PDF Report - plain text only to avoid encoding issues
     pdf = FPDF()
     pdf.add_page()
     pdf.set_font("Arial", "B", 16)
@@ -149,11 +149,12 @@ if premium:
     pdf.cell(0, 10, f"5-Year Survival: {survival_prob(60)*100:.1f}%", ln=1)
     pdf.cell(0, 10, f"Estimated Happiness: {happiness:.0f}/100", ln=1)
     pdf.ln(10)
-    pdf.set_font("Arial", "I", 10)
-    pdf.multi_cell(0, 8, "This is a simplified model based on Gottman research. "
-                         "Higher compatibility, positive interactions, successful repairs, shared values, intimacy, and financial harmony improve odds. "
-                         "Frequent conflicts, toxic patterns, external stress, and age extremes reduce them. "
-                         "Use as insight only — not a diagnosis.")
+    pdf.set_font("Arial", "", 10)
+    pdf.multi_cell(0, 8, "This is a simplified exponential survival model based on Gottman research. "
+                         "Higher compatibility, positive interactions, successful repairs, shared values, "
+                         "intimacy frequency, and financial compatibility improve odds. "
+                         "Frequent conflicts, Four Horsemen behaviors, external stress, and age extremes reduce them. "
+                         "Use as insight only - not a diagnosis or guarantee.")
     pdf_output = BytesIO()
     pdf.output(pdf_output)
     pdf_bytes = pdf_output.getvalue()
@@ -171,7 +172,7 @@ if premium:
     buf.seek(0)
     st.download_button("Download Shareable Summary (PNG)", buf.getvalue(), "relationship_summary.png", "image/png")
 
-# ────────────────────────────── Monetization Banner ──────────────────────────────
+# Monetization Banner
 st.markdown("---")
 st.markdown("""
 <div style="background:#f8f9fa; padding:20px; border-radius:12px; text-align:center; border:1px solid #dee2e6;">
@@ -182,7 +183,7 @@ st.markdown("""
         <li>Downloadable PDF report</li>
         <li>Shareable results image</li>
     </ul>
-    <a href="YOUR_GUMROAD_PRODUCT_LINK_HERE" target="_blank" style="display:inline-block; padding:14px 36px; background:#0d6efd; color:white; border-radius:8px; text-decoration:none; font-weight:bold; font-size:18px;">
+    <a href="https://larkinharry.gumroad.com/l/relationshippredictor" target="_blank" style="display:inline-block; padding:14px 36px; background:#0d6efd; color:white; border-radius:8px; text-decoration:none; font-weight:bold; font-size:18px;">
         Pay $4.99 & Get Code
     </a>
     <p style="margin-top:20px; font-size:14px;">
