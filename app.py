@@ -10,7 +10,7 @@ from matplotlib.patches import FancyBboxPatch
 st.set_page_config(page_title="Relationship Survival Predictor", page_icon="❤️", layout="centered")
 
 st.title("Relationship Survival Predictor")
-st.markdown("Quant model based on Gottman Institute research + survival analysis<br>Free: 7 variables. Premium: extra inputs + detailed PDF + shareable card", unsafe_allow_html=True)
+st.markdown("Quant model based on Gottman Institute research + survival analysis.", unsafe_allow_html=True)
 
 # Sidebar Inputs
 st.sidebar.header("Your Relationship Data")
@@ -227,14 +227,14 @@ st.markdown("---")
 st.markdown("""
 <div style="background:#f8f9fa; padding:20px; border-radius:12px; text-align:center; border:1px solid #dee2e6;">
     <h3 style="margin:0;">Unlock Premium Features</h3>
-    <p style="margin:12px 0 8px; font-size:16px;">For $4.99 one-time you get:</p>
+    <p style="margin:12px 0 8px; font-size:16px;">For $0.99 one-time you get:</p>
     <ul style="text-align:left; max-width:500px; margin:0 auto 16px;">
         <li>Extra inputs: intimacy frequency, age at start, financial compatibility</li>
         <li>Detailed, beautiful PDF report</li>
         <li>Shareable summary card image</li>
     </ul>
     <a href="YOUR_GUMROAD_PRODUCT_LINK_HERE" target="_blank" style="display:inline-block; padding:14px 36px; background:#0d6efd; color:white; border-radius:8px; text-decoration:none; font-weight:bold; font-size:18px;">
-        Pay $4.99 & Get Code
+        Pay $0.99 & Get Code
     </a>
     <p style="margin-top:20px; font-size:14px;">
         Already paid? Enter your code in the sidebar box.
