@@ -168,7 +168,7 @@ st.markdown("---")
 st.markdown("""
 <div style="background:#f8f9fa; padding:20px; border-radius:12px; text-align:center; border:1px solid #dee2e6;">
     <h3 style="margin:0;">Unlock Premium Features</h3>
-    <p style="margin:12px 0 8px; font-size:16px;">Get more for just $4.99 one-time:</p>
+    <p style="margin:12px 0 8px; font-size:16px;">Get more for just $2.99 one-time:</p>
     <ul style="text-align:left; max-width:500px; margin:0 auto 16px;">
         <li>Extra inputs: intimacy frequency, age at start, financial compatibility</li>
         <li>Downloadable PDF report</li>
