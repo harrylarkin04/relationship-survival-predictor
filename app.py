@@ -17,7 +17,13 @@ st.sidebar.header("Your Relationship Data")
 
 st.sidebar.markdown("**Compatibility & Communication**")
 compatibility = st.sidebar.slider("Compatibility score (0–10)", 0.0, 10.0, 6.5, 0.1)
-pos_neg_ratio = st.sidebar.slider("Positive:Negative ratio", 0.5, 10.0, 3.5, 0.1, help="Ideal ≥5:1")
+pos_neg_ratio = st.sidebar.slider(
+    "Positive:Negative interaction ratio",
+    0.5, 10.0, 3.5, 0.1,
+    help="""Gottman's 'Magic Ratio': In stable relationships, there are at least 5 positive interactions (compliments, affection, laughter, support) for every 1 negative interaction (criticism, sarcasm, argument). 
+Count typical daily/weekly interactions — aimy compliments, touches, laughs vs. eye-rolls, complaints, arguments. 
+Ideal is 5:1 or higher (e.g. 5.0+ on slider). Below 1:1 predicts high risk."""
+)
 
 st.sidebar.markdown("**Conflict & Repair**")
 conflict_freq = st.sidebar.slider("Conflicts per month", 0, 20, 4)
@@ -26,7 +32,8 @@ four_horsemen = st.sidebar.slider(
     0, 10, 3,
     help="Criticism, Contempt, Defensiveness, Stonewalling — rate how often/intensely these appear in arguments."
 )
-repair_success = st.sidebar.slider("Repair attempt success (0–10)", 0, 10, 6, help="How well do you de-escalate / make up after fights?")
+repair_success = st.sidebar.slider("Repair attempt success (0–10)", 0, 10 
+6, help="How well do you de-escalate / make up after fights?")
 
 st.sidebar.markdown("**Life & Values**")
 shared_values = st.sidebar.slider("Shared values/goals (0–10)", 0.0, 10.0, 6.0, 0.1)
@@ -52,45 +59,45 @@ if premium:
     st.sidebar.markdown("**Premium Variables**")
     intimacy_freq = st.sidebar.slider("Physical intimacy frequency (times/month)", 0, 30, 8, 1)
     age_at_start = st.sidebar.slider("Age when relationship started (years)", 18, 50, 25, 1)
-    financial_compat = st.sidebar.slider("Financial compatibility (0–10)", 0.0, 10.0, 6.0, 0.1)
+    financial_compat = st.sidebar.slider("Financial compatibility (0–22.0, 10.0, 6.0, 0.1)
 else:
     intimacy_freq = 8
     age_at_start = 25
     financial_compat = 6.0
 
-# Recalibrated Model (better fit to Gottman data — perfect inputs ~82-88% at 5 years)
-lambda_base = 0.028  # Lowered base for healthier top-end
+# Model
+lambda_base = 0.028
 
 lambda_penalty = (
-    0.014 * (5.0 - pos_neg_ratio) +      # Slightly stronger penalty for poor ratio
+    0.014 * (5.0 - pos_neg_ratio) +
     0.009 * conflict_freq +
     0.010 * four_horsemen +
     -0.007 * compatibility +
     -0.006 * shared_values +
     0.008 * external_stress +
     -0.007 * repair_success +
-    -0.005 * (intimacy_freq / 10) +              # premium
-    0.0025 * max(0, abs(age_at_start - 28)) +    # premium
-    -0.006 * financial_compat                    # premium
+    -0.005 * (intimacy_freq / 10) +
+    0.0025 * max(0, abs(age_at_start - 28)) +
+    -0.006 * financial_compat
 )
 
-lambda_monthly = max(0.008, lambda_base + lambda_penalty)  # Lower floor for top couples
+lambda_monthly = max(0.008, lambda_base + lambda_penalty)
 
 def survival_prob(months):
     return np.exp(-lambda_monthly * months)
 
 happiness = max(10, min(100,
-    65 +
-    4.5 * compatibility +
-    3.5 * pos_neg_ratio +
-    -2.8 * conflict_freq +
-    -4.0 * four_horsemen +
-    4.0 * shared_values +
-    -3.2 * external_stress +
-    4.5 * repair_success +
-    3.0 * (intimacy_freq / 5) +
-    -1.8 * max(0, abs(age_at_start - 28)) +
-    3.5 * financial_compat
+    60 +
+    4.0 * compatibility +
+    3.0 * pos_neg_ratio +
+    -2.5 * conflict_freq +
+    -3.5 * four_horsemen +
+    3.5 * shared_values +
+    -2.8 * external_stress +
+    4.0 * repair_success +
+    2.5 * (intimacy_freq / 5) +
+    -1.5 * max(0, abs(age_at_start - 28)) +
+    3.0 * financial_compat
 ))
 
 # Main Outputs
@@ -114,18 +121,18 @@ st.plotly_chart(fig, use_container_width=True)
 
 # Impact Bar
 impact_data = {
-    "Compatibility": 4.5 * compatibility,
-    "Pos:Neg Ratio": 3.5 * pos_neg_ratio,
-    "Conflicts": -2.8 * conflict_freq,
-    "Four Horsemen": -4.0 * four_horsemen,
-    "Shared Values": 4.0 * shared_values,
-    "External Stress": -3.2 * external_stress,
-    "Repair Success": 4.5 * repair_success,
+    "Compatibility": 4.0 * compatibility,
+    "Pos:Neg Ratio": 3.0 * pos_neg_ratio,
+    "Conflicts": -2.5 * conflict_freq,
+    "Four Horsemen": -3.5 * four_horsemen,
+    "Shared Values": 3.5 * shared_values,
+    "External Stress": -2.8 * external_stress,
+    "Repair Success": 4.0 * repair_success,
 }
 if premium:
-    impact_data["Intimacy Freq"] = 3.0 * (intimacy_freq / 5)
-    impact_data["Age Risk"] = -1.8 * max(0, abs(age_at_start - 28))
-    impact_data["Financial Compat"] = 3.5 * financial_compat
+    impact_data["Intimacy Freq"] = 2.5 * (intimacy_freq / 5)
+    impact_data["Age Risk"] = -1.5 * max(0, abs(age_at_start - 28))
+    impact_data["Financial Compat"] = 3.0 * financial_compat
 
 fig2 = go.Figure(go.Bar(
     x=list(impact_data.keys()),
@@ -157,7 +164,7 @@ if premium:
     pdf.cell(0, 10, "Happiness Estimate", ln=1)
     pdf.set_font("Arial", "", 12)
     pdf.cell(0, 8, f"Score: {happiness:.0f}/100", ln=1)
-    pdf.cell(0, 8, f"Interpretation: {'Excellent outlook' if happiness >= 80 else 'Strong' if happiness >= 70 else 'Good' if happiness >= 60 else 'Moderate' if happiness >= 50 else 'Needs attention'}", ln=1)
+    pdf.cell(0, 8, f"Interpretation: {'Outstanding' if happiness >= 90 else 'Excellent' if happiness >= 80 else 'Strong' if happiness >= 70 else 'Good' if happiness >= 60 else 'Moderate' if happiness >= 50 else 'Needs attention'}", ln=1)
     pdf.ln(10)
     pdf.set_font("Arial", "B", 14)
     pdf.cell(0, 10, "Your Strengths", ln=1)
