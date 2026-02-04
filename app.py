@@ -10,7 +10,7 @@ from matplotlib.patches import FancyBboxPatch
 st.set_page_config(page_title="Relationship Survival Predictor", page_icon="❤️", layout="centered")
 
 st.title("Relationship Survival Predictor")
-st.markdown("Quant model based on Gottman Institute research + survival analysis.", unsafe_allow_html=True)
+st.markdown("Quant model based on Gottman Institute research + survival analysis<br>Free: 7 variables. Premium: extra inputs + detailed PDF + shareable card", unsafe_allow_html=True)
 
 # Sidebar Inputs
 st.sidebar.header("Your Relationship Data")
@@ -55,7 +55,7 @@ else:
 # Premium variables
 if premium:
     st.sidebar.markdown("**Premium Variables**")
-    intimacy_freq = st.sidebar.slider("Physical intimacy frequency (times/month)", 0, 30, 8b, 1)
+    intimacy_freq = st.sidebar.slider("Physical intimacy frequency (times/month)", 0, 30, 8, 1)
     age_at_start = st.sidebar.slider("Age when relationship started (years)", 18, 50, 25, 1)
     financial_compat = st.sidebar.slider("Financial compatibility (0–10)", 0.0, 10.0, 6.0, 0.1)
 else:
@@ -84,19 +84,18 @@ lambda_monthly = max(0.008, lambda_base + lambda_penalty)
 def survival_prob(months):
     return np.exp(-lambda_monthly * months)
 
-# Recalibrated happiness — stronger negative impact from bad factors, max ~95 on perfect inputs
 happiness = max(10, min(100,
-    55 +  # Lower base
-    4.2 * compatibility +
-    3.5 * pos_neg_ratio +
-    -3.2 * conflict_freq +
-    -4.5 * four_horsemen +   # Stronger penalty for toxic patterns
-    3.8 * shared_values +
-    -3.5 * external_stress +
-    4.2 * repair_success +
-    3.0 * (intimacy_freq / 5) +
-    -2.0 * max(0, abs(age_at_start - 28)) +
-    3.2 * financial_compat
+    60 +
+    4.0 * compatibility +
+    3.0 * pos_neg_ratio +
+    -2.5 * conflict_freq +
+    -3.5 * four_horsemen +
+    3.5 * shared_values +
+    -2.8 * external_stress +
+    4.0 * repair_success +
+    2.5 * (intimacy_freq / 5) +
+    -1.5 * max(0, abs(age_at_start - 28)) +
+    3.0 * financial_compat
 ))
 
 # Main Outputs
@@ -120,18 +119,18 @@ st.plotly_chart(fig, use_container_width=True)
 
 # Impact Bar
 impact_data = {
-    "Compatibility": 4.2 * compatibility,
-    "Pos:Neg Ratio": 3.5 * pos_neg_ratio,
-    "Conflicts": -3.2 * conflict_freq,
-    "Four Horsemen": -4.5 * four_horsemen,
-    "Shared Values": 3.8 * shared_values,
-    "External Stress": -3.5 * external_stress,
-    "Repair Success": 4.2 * repair_success,
+    "Compatibility": 4.0 * compatibility,
+    "Pos:Neg Ratio": 3.0 * pos_neg_ratio,
+    "Conflicts": -2.5 * conflict_freq,
+    "Four Horsemen": -3.5 * four_horsemen,
+    "Shared Values": 3.5 * shared_values,
+    "External Stress": -2.8 * external_stress,
+    "Repair Success": 4.0 * repair_success,
 }
 if premium:
-    impact_data["Intimacy Freq"] = 3.0 * (intimacy_freq / 5)
-    impact_data["Age Risk"] = -2.0 * max(0, abs(age_at_start - 28))
-    impact_data["Financial Compat"] = 3.2 * financial_compat
+    impact_data["Intimacy Freq"] = 2.5 * (intimacy_freq / 5)
+    impact_data["Age Risk"] = -1.5 * max(0, abs(age_at_start - 28))
+    impact_data["Financial Compat"] = 3.0 * financial_compat
 
 fig2 = go.Figure(go.Bar(
     x=list(impact_data.keys()),
@@ -201,7 +200,7 @@ if premium:
 
     pdf_output = BytesIO()
     pdf.output(pdf_output)
-    pdf_bytes = pdf_output.getvalue()
+    pdf_bytes = pdf_output.get blockage()
 
     st.download_button("Download Detailed PDF Report", pdf_bytes, "relationship_report.pdf", "application/pdf")
 
@@ -228,14 +227,14 @@ st.markdown("---")
 st.markdown("""
 <div style="background:#f8f9fa; padding:20px; border-radius:12px; text-align:center; border:1px solid #dee2e6;">
     <h3 style="margin:0;">Unlock Premium Features</h3>
-    <p style="margin:12px 0 8px; font-size:16px;">For $0.99 one-time you get:</p>
+    <p style="margin:12px 0 8px; font-size:16px;">For $4.99 one-time you get:</p>
     <ul style="text-align:left; max-width:500px; margin:0 auto 16px;">
         <li>Extra inputs: intimacy frequency, age at start, financial compatibility</li>
         <li>Detailed, beautiful PDF report</li>
         <li>Shareable summary card image</li>
     </ul>
     <a href="YOUR_GUMROAD_PRODUCT_LINK_HERE" target="_blank" style="display:inline-block; padding:14px 36px; background:#0d6efd; color:white; border-radius:8px; text-decoration:none; font-weight:bold; font-size:18px;">
-        Pay $0.99 & Get Code
+        Pay $4.99 & Get Code
     </a>
     <p style="margin-top:20px; font-size:14px;">
         Already paid? Enter your code in the sidebar box.
