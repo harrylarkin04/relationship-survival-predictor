@@ -1,5 +1,5 @@
 import streamlit as st
-import nand np as np
+import numpy as np
 import plotly.graph_objects as go
 from fpdf import FPDF
 import base64
