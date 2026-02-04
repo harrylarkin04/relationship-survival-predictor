@@ -10,7 +10,7 @@ from matplotlib.patches import FancyBboxPatch
 st.set_page_config(page_title="Relationship Survival Predictor", page_icon="❤️", layout="centered")
 
 st.title("Relationship Survival Predictor")
-st.markdown("**Quant model calibrated to Gottman Institute data**<br>Free: 7 variables. Premium: extra inputs + detailed PDF + shareable card", unsafe_allow_html=True)
+st.markdown("Quant model based on Gottman Institute research + survival analysis<br>Free: 7 variables. Premium: extra inputs + detailed PDF + shareable card", unsafe_allow_html=True)
 
 # Sidebar Inputs
 st.sidebar.header("Your Relationship Data")
@@ -64,7 +64,7 @@ lambda_base = 0.028  # Lowered base for healthier top-end
 lambda_penalty = (
     0.014 * (5.0 - pos_neg_ratio) +      # Slightly stronger penalty for poor ratio
     0.009 * conflict_freq +
-    0.010 * four Theories_horsemen +
+    0.010 * four_horsemen +
     -0.007 * compatibility +
     -0.006 * shared_values +
     0.008 * external_stress +
