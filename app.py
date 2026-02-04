@@ -175,7 +175,7 @@ st.markdown("""
         <li>Shareable summary image</li>
     </ul>
     <a href="https://your-gumroad-link-here" target="_blank" style="display:inline-block; padding:14px 36px; background:#0d6efd; color:white; border-radius:8px; text-decoration:none; font-weight:bold; font-size:18px;">
-        Unlock Premium – $4.99
+        Unlock Premium – $2.99
     </a>
     <p style="margin-top:20px; font-size:14px; color:#6c757d;">
         This free version is supported by ads on my site → <a href="https://your-ads-page-link" style="color:#0d6efd;">visit here</a>
