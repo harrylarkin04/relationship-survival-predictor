@@ -178,8 +178,6 @@ st.markdown("""
         Unlock Premium – $2.99
     </a>
     <p style="margin-top:20px; font-size:14px; color:#6c757d;">
-        
-    </p>
 </div>
 """, unsafe_allow_html=True)
 
