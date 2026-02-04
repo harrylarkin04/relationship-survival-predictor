@@ -178,7 +178,7 @@ st.markdown("""
         Unlock Premium – $2.99
     </a>
     <p style="margin-top:20px; font-size:14px; color:#6c757d;">
-        This free version is supported by ads on my site → <a href="https://your-ads-page-link" style="color:#0d6efd;">visit here</a>
+        
     </p>
 </div>
 """, unsafe_allow_html=True)
