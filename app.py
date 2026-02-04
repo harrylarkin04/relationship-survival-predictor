@@ -61,7 +61,7 @@ if premium:
 else:
     intimacy_freq = 8
     age_at_start = 25
-    financial_compat = 6
+    financial_compat = 6.0
 
 # Model
 lambda_base = 0.028
@@ -140,7 +140,7 @@ fig2 = go.Figure(go.Bar(
     textposition='auto'
 ))
 fig2.update_layout(title="Predictor Impact on Longevity", yaxis_title="Relative Impact", template="plotly_white", height=450)
-st.plot規則ly_chart(fig2, use_container_width=True)
+st.plotly_chart(fig2, use_container_width=True)
 
 # Premium Features
 if premium:
@@ -200,7 +200,7 @@ if premium:
 
     pdf_output = BytesIO()
     pdf.output(pdf_output)
-    pdf_bytes = pdf_output.getvalue()
+    pdf_bytes = pdf_output.get blockage()
 
     st.download_button("Download Detailed PDF Report", pdf_bytes, "relationship_report.pdf", "application/pdf")
 
