@@ -33,10 +33,20 @@ external_stress = st.sidebar.slider("External stress (finances/work/family, 0–
 
 time_together = st.sidebar.number_input("Time together (months)", min_value=1, value=18, step=1)
 
-# Premium toggle
-premium = st.sidebar.checkbox("Unlock Premium ($4.99 one-time)", value=False)
+# Premium code input
+st.sidebar.markdown("**Premium Access**")
+premium_code = st.sidebar.text_input("Enter Premium Code (from Gumroad email)", "")
+premium = premium_code.strip() == "PREMIUM2026"  # Change this code if you want
 
-# Premium variables (only shown/used if premium is checked)
+if premium:
+    st.sidebar.success("Premium unlocked! Extra variables + downloads available.")
+else:
+    if premium_code.strip():
+        st.sidebar.error("Invalid code. Get yours for $4.99 on Gumroad.")
+    else:
+        st.sidebar.info("Enter code to unlock premium features")
+
+# Premium variables (only active if code correct)
 if premium:
     st.sidebar.markdown("**Premium Variables**")
     intimacy_freq = st.sidebar.slider("Physical intimacy frequency (times/month)", 0, 30, 8, 1)
@@ -159,8 +169,6 @@ if premium:
     buf = BytesIO()
     fig_summary.savefig(buf, format="png", bbox_inches='tight')
     buf.seek(0)
-    img_base64 = base64.b64encode(buf.read()).decode()
-    st.markdown(f'<img src="data:image/png;base64,{img_base64}" width="100%" />', unsafe_allow_html=True)
     st.download_button("Download Shareable Summary (PNG)", buf.getvalue(), "relationship_summary.png", "image/png")
 
 # ────────────────────────────── Monetization Banner ──────────────────────────────
@@ -168,16 +176,18 @@ st.markdown("---")
 st.markdown("""
 <div style="background:#f8f9fa; padding:20px; border-radius:12px; text-align:center; border:1px solid #dee2e6;">
     <h3 style="margin:0;">Unlock Premium Features</h3>
-    <p style="margin:12px 0 8px; font-size:16px;">Get more for just $2.99 one-time:</p>
+    <p style="margin:12px 0 8px; font-size:16px;">For $4.99 one-time you get:</p>
     <ul style="text-align:left; max-width:500px; margin:0 auto 16px;">
         <li>Extra inputs: intimacy frequency, age at start, financial compatibility</li>
         <li>Downloadable PDF report</li>
-        <li>Shareable summary image</li>
+        <li>Shareable results image</li>
     </ul>
-    <a href="https://your-gumroad-link-here" target="_blank" style="display:inline-block; padding:14px 36px; background:#0d6efd; color:white; border-radius:8px; text-decoration:none; font-weight:bold; font-size:18px;">
-        Unlock Premium – $2.99
+    <a href="YOUR_GUMROAD_PRODUCT_LINK_HERE" target="_blank" style="display:inline-block; padding:14px 36px; background:#0d6efd; color:white; border-radius:8px; text-decoration:none; font-weight:bold; font-size:18px;">
+        Pay $4.99 & Get Code
     </a>
-    <p style="margin-top:20px; font-size:14px; color:#6c757d;">
+    <p style="margin-top:20px; font-size:14px;">
+        Already paid? Enter your code in the sidebar box.
+    </p>
 </div>
 """, unsafe_allow_html=True)
 
