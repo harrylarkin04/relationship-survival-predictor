@@ -11,7 +11,7 @@ from scipy.stats import weibull_min  # For Weibull survival
 st.set_page_config(page_title="Relationship Survival Predictor", page_icon="❤️", layout="centered")
 
 st.title("Relationship Survival Predictor")
-st.markdown("**Quant model based on Gottman Institute research + survival analysis**<br>Uses Weibull distribution for realistic decreasing hazard over time.", unsafe_allow_html=True)
+st.markdown("**Quant model calibrated to Gottman Institute data + survival analysis**<br>Weibull distribution for decreasing hazard (stabilizes long relationships).", unsafe_allow_html=True)
 
 # Sidebar Inputs
 st.sidebar.header("Your Relationship Data")
@@ -122,18 +122,18 @@ st.plotly_chart(fig, use_container_width=True)
 
 # Impact Bar
 impact_data = {
-    "Compatibility": 4.0 * compatibility,
-    "Pos:Neg Ratio": 3.0 * pos_neg_ratio,
-    "Conflicts": -2.5 * conflict_freq,
-    "Four Horsemen": -3.5 * four_horsemen,
-    "Shared Values": 3.5 * shared_values,
-    "External Stress": -2.8 * external_stress,
-    "Repair Success": 4.0 * repair_success,
+    "Compatibility": 3.5 * compatibility,
+    "Pos:Neg Ratio": 2.5 * pos_neg_ratio,
+    "Conflicts": -3.0 * conflict_freq,
+    "Four Horsemen": -4.0 * four_horsemen,
+    "Shared Values": 3.0 * shared_values,
+    "External Stress": -3.2 * external_stress,
+    "Repair Success": 3.5 * repair_success,
 }
 if premium:
-    impact_data["Intimacy Freq"] = 2.5 * (intimacy_freq / 5)
-    impact_data["Age Risk"] = -1.5 * max(0, abs(age_at_start - 28))
-    impact_data["Financial Compat"] = 3.0 * financial_compat
+    impact_data["Intimacy Freq"] = 2.0 * (intimacy_freq / 5)
+    impact_data["Age Risk"] = -2.0 * max(0, abs(age_at_start - 28))
+    impact_data["Financial Compat"] = 2.5 * financial_compat
 
 fig2 = go.Figure(go.Bar(
     x=list(impact_data.keys()),
@@ -245,4 +245,4 @@ st.markdown("""
 </div>
 """, unsafe_allow_html=True)
 
-st.caption("Simplified exponential survival model based on Gottman Institute data. Educational/entertainment use only. Made by @views094")
+st.caption("Weibull survival model (decreasing hazard over time) calibrated to Gottman Institute data. Educational/entertainment use only. Made by @views094")
