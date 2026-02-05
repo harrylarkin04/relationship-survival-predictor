@@ -6,12 +6,11 @@ import base64
 from io import BytesIO
 import matplotlib.pyplot as plt
 from matplotlib.patches import FancyBboxPatch
-from scipy.stats import weibull_min  # For Weibull survival
 
 st.set_page_config(page_title="Relationship Survival Predictor", page_icon="❤️", layout="centered")
 
 st.title("Relationship Survival Predictor")
-st.markdown("**Quant model based on Gottman Institute research + survival analysis**<br>Uses Weibull distribution for realistic decreasing hazard over time.", unsafe_allow_html=True)
+st.markdown("Quant model based on Gottman Institute research + survival analysis.", unsafe_allow_html=True)
 
 # Sidebar Inputs
 st.sidebar.header("Your Relationship Data")
@@ -64,28 +63,26 @@ else:
     age_at_start = 25
     financial_compat = 6.0
 
-# Weibull Model (decreasing hazard over time — more accurate)
-k = 0.8  # Shape parameter <1 → decreasing hazard (longer relationships more stable)
+# Model (back to exponential for sensitivity to inputs)
+lambda_base = 0.035  # Original base
 
-base_scale = 600  # High base for strong relationships
-
-scale_penalty = (
-    40 * (5.0 - pos_neg_ratio) +      # Strong penalty for poor ratio
-    30 * conflict_freq +
-    35 * four_horsemen +
-    -25 * compatibility +
-    -20 * shared_values +
-    30 * external_stress +
-    -28 * repair_success +
-    -18 * (intimacy_freq / 10) +              # premium
-    12 * max(0, abs(age_at_start - 28)) +     # premium
-    -22 * financial_compat                    # premium
+lambda_penalty = (
+    0.012 * (5.0 - pos_neg_ratio) +
+    0.008 * conflict_freq +
+    0.009 * four_horsemen +
+    -0.006 * compatibility +
+    -0.005 * shared_values +
+    0.007 * external_stress +
+    -0.006 * repair_success +
+    -0.004 * (intimacy_freq / 10) +
+    0.002 * max(0, abs(age_at_start - 28)) +
+    -0.005 * financial_compat
 )
 
-relationship_scale = max(50, base_scale + scale_penalty)  # Floor to avoid impossible numbers
+lambda_monthly = max(0.01, lambda_base + lambda_penalty)
 
 def survival_prob(months):
-    return weibull_min.sf(months, c=k, scale=relationship_scale)
+    return np.exp(-lambda_monthly * months)
 
 happiness = max(10, min(100,
     60 +
@@ -117,7 +114,7 @@ fig.add_trace(go.Scatter(x=[1,5,10], y=[survival_prob(12)*100, survival_prob(60)
                          mode='markers+text', marker=dict(size=12, color='#1d3557'),
                          text=[f"{survival_prob(12)*100:.1f}%", f"{survival_prob(60)*100:.1f}%", f"{survival_prob(120)*100:.1f}%"],
                          textposition="top center"))
-fig.update_layout(title="Relationship Survival Over Time (Weibull Model - Decreasing Hazard)", xaxis_title="Years", yaxis_title="Probability (%)", yaxis_range=[0,100], template="plotly_white", height=500)
+fig.update_layout(title="Relationship Survival Over Time", xaxis_title="Years", yaxis_title="Probability (%)", yaxis_range=[0,100], template="plotly_white", height=500)
 st.plotly_chart(fig, use_container_width=True)
 
 # Impact Bar
@@ -245,4 +242,4 @@ st.markdown("""
 </div>
 """, unsafe_allow_html=True)
 
-st.caption("Weibull survival model (decreasing hazard over time) calibrated to Gottman Institute data. Educational/entertainment use only. Made by @views094")
+st.caption("Simplified exponential survival model based on Gottman Institute data. Educational/entertainment use only. Made by @views094")
