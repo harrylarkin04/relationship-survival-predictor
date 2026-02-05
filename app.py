@@ -4,14 +4,14 @@ import plotly.graph_objects as go
 from fpdf import FPDF
 import base64
 from io import BytesIO
-import matplotlib.pyplot as st
+import matplotlib.pyplot as plt
 from matplotlib.patches import FancyBboxPatch
-from scipy.stats import weibull_min  # For Weibull survival
+from scipy.stats import weibull_min
 
-st.set_page_config(page_title="Relationship Survival Predictor", page_icon="❤️", layout="centered")
+st.set_page_config(page_title="Relationship Survival Predictor", page_icon=":heart:", layout="centered")
 
 st.title("Relationship Survival Predictor")
-st.markdown("**Quant model calibrated to Gottman Institute data + survival analysis**<br>Weibull distribution for decreasing hazard (stabilizes long relationships).", unsafe_allow_html=True)
+st.markdown("Quant model based on Gottman Institute research + survival analysis<br>Free: 7 variables. Premium: extra inputs + detailed PDF + shareable card", unsafe_allow_html=True)
 
 # Sidebar Inputs
 st.sidebar.header("Your Relationship Data")
