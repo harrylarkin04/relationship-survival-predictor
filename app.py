@@ -4,14 +4,14 @@ import plotly.graph_objects as go
 from fpdf import FPDF
 import base64
 from io import BytesIO
-import matplotlib.pyplot as plt
+import matplotlib.pyplot as st
 from matplotlib.patches import FancyBboxPatch
-from scipy.stats import weibull_min
+from scipy.stats import weibull_min  # For Weibull survival
 
 st.set_page_config(page_title="Relationship Survival Predictor", page_icon="❤️", layout="centered")
 
 st.title("Relationship Survival Predictor")
-st.markdown("**Quant model calibrated to Gottman Institute data + survival analysis**<br>Weibull distribution for decreasing hazard (longer relationships stabilize).", unsafe_allow_html=True)
+st.markdown("**Quant model calibrated to Gottman Institute data + survival analysis**<br>Weibull distribution for decreasing hazard (stabilizes long relationships).", unsafe_allow_html=True)
 
 # Sidebar Inputs
 st.sidebar.header("Your Relationship Data")
@@ -64,16 +64,16 @@ else:
     age_at_start = 25
     financial_compat = 6.0
 
-# Weibull Model (calibrated: average ~50% at 5 years, perfect ~85%)
+# Weibull Model (calibrated to data: average ~50% at 5 years, perfect ~85%)
 k = 0.8  # Shape <1 for decreasing hazard
 
 base_scale = 120  # Months; calibrated so average inputs ~50% at 5 years
 
 scale_penalty = (
-    50 * (5.0 - pos_neg_ratio) +      # higher bad ratio → bigger penalty (lower scale = higher risk)
+    50 * (5.0 - pos_neg_ratio) +
     40 * conflict_freq +
     45 * four_horsemen +
-    -35 * compatibility +              # higher good compatibility → negative penalty (higher scale = lower risk)
+    -35 * compatibility +
     -30 * shared_values +
     40 * external_stress +
     -35 * repair_success +
@@ -82,7 +82,7 @@ scale_penalty = (
     -30 * financial_compat
 )
 
-scale = max(50, base_scale + scale_penalty)  # Floor to avoid impossible survival
+scale = max(50, base_scale + scale_penalty)  # Floor to avoid too low
 
 def survival_prob(months):
     return weibull_min.sf(months, c=k, scale=scale)
