@@ -6,12 +6,12 @@ import base64
 from io import BytesIO
 import matplotlib.pyplot as plt
 from matplotlib.patches import FancyBboxPatch
-from scipy.stats import weibull_min
+from scipy.stats import weibull_min  # For Weibull survival
 
 st.set_page_config(page_title="Relationship Survival Predictor", page_icon=":heart:", layout="centered")
 
 st.title("Relationship Survival Predictor")
-st.markdown("Quant model based on Gottman Institute research + survival analysis<br>Free: 7 variables. Premium: extra inputs + detailed PDF + shareable card", unsafe_allow_html=True)
+st.markdown("**Quant model calibrated to Gottman Institute data + survival analysis**<br>Weibull distribution for decreasing hazard (longer relationships stabilize).", unsafe_allow_html=True)
 
 # Sidebar Inputs
 st.sidebar.header("Your Relationship Data")
@@ -64,25 +64,25 @@ else:
     age_at_start = 25
     financial_compat = 6.0
 
-# Weibull Model (calibrated to data: average ~50% at 5 years, perfect ~85%)
+# Weibull Model (calibrated: average ~50% at 5 years, perfect ~85%)
 k = 0.8  # Shape <1 for decreasing hazard
 
 base_scale = 120  # Months; calibrated so average inputs ~50% at 5 years
 
-scale_penalty = (
-    50 * (5.0 - pos_neg_ratio) +
-    40 * conflict_freq +
-    45 * four_horsemen +
-    -35 * compatibility +
-    -30 * shared_values +
-    40 * external_stress +
-    -35 * repair_success +
-    -25 * (intimacy_freq / 10) +
-    20 * max(0, abs(age_at_start - 28)) +
-    -30 * financial_compat
+scale_adjust = (
+    -40 * (5.0 - pos_neg_ratio) +  # High ratio → positive adjust (higher scale = higher survival)
+    -35 * conflict_freq +
+    -40 * four_horsemen +
+    30 * compatibility +
+    25 * shared_values +
+    -35 * external_stress +
+    30 * repair_success +
+    20 * (intimacy_freq / 10) +
+    -15 * max(0, abs(age_at_start - 28)) +
+    25 * financial_compat
 )
 
-scale = max(50, base_scale + scale_penalty)  # Floor to avoid too low
+scale = max(50, base_scale + scale_adjust)  # Floor to avoid too low
 
 def survival_prob(months):
     return weibull_min.sf(months, c=k, scale=scale)
