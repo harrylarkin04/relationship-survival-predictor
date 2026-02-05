@@ -32,7 +32,7 @@ four_horsemen = st.sidebar.slider(
     0, 10, 3,
     help="Criticism, Contempt, Defensiveness, Stonewalling — rate how often/intensely these appear in arguments."
 )
-repair_success = st.sidebar.slider("Repair attempt success (0–10)", 0, 10, 6, help="How well do you de-escalate / make up after fights?")
+repair_success = st.sidebar.slider("Repair attempt success (0–10)", 0, 10, 6, help="How well do you de-escalate / make up after fights?")
 
 st.sidebar.markdown("**Life & Values**")
 shared_values = st.sidebar.slider("Shared values/goals (0–10)", 0.0, 10.0, 6.0, 0.1)
