@@ -236,7 +236,7 @@ st.markdown("""
         <li>Detailed, beautiful PDF report</li>
         <li>Shareable summary card image</li>
     </ul>
-    <a href="YOUR_GUMROAD_PRODUCT_LINK_HERE" target="_blank" style="display:inline-block; padding:14px 36px; background:#0d6efd; color:white; border-radius:8px; text-decoration:none; font-weight:bold; font-size:18px;">
+    <a href="https://larkinharry.gumroad.com/l/relationshippredictor" target="_blank" style="display:inline-block; padding:14px 36px; background:#0d6efd; color:white; border-radius:8px; text-decoration:none; font-weight:bold; font-size:18px;">
         Pay $0.99 & Get Code
     </a>
     <p style="margin-top:20px; font-size:14px;">
